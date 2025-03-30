@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:instagram/Tools/custom_text.dart';
 import 'package:instagram/UI_Parts_Helper/button_card.dart';
 import 'package:instagram/UI_Parts_Helper/category_info.dart';
@@ -31,10 +30,32 @@ class _UserPageState extends State<UserPage>
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map?;
+
+    Map info = {};
+    Map userPosts = {};
+    Map userReels = {};
+    Map userFollowers = {};
+    bool isPrivate = false;
+
+    if (args != null) {
+      info = args['userInfo']['data'];
+      if (args['userPosts']['data'] != null) {
+        userPosts = args['userPosts']['data'];
+        userFollowers = args['userFollowers']['data'];
+        userReels = args['userReels']['data'];
+      } else {
+        isPrivate = true;
+        userPosts = {'data': []};
+        userFollowers = {'data': []};
+        userReels = {'data': []};
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: CustomText(text: "UserName"),
-        automaticallyImplyLeading: false,
+        title: CustomText(text: info['username'] ?? "unknown User"),
+        leadingWidth: 30,
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),
@@ -49,13 +70,33 @@ class _UserPageState extends State<UserPage>
             padding: const EdgeInsets.all(14),
             child: Column(
               children: [
-                UserInfo(),
+                UserInfo(
+                  userInfo: info,
+                  posts: userPosts['count'],
+                  isPrivate: isPrivate,
+                ),
                 CategoryInfo(
+                  posts: userPosts,
+                  p: info['biography'],
+                  fullName: info['full_name'],
                   img: [
-                    "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
-                    "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
-                    "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
+                    userFollowers['items'][0]['profile_pic_url'] ??
+                        "assets/default_avatar.jpg",
+                    userFollowers['items'][1]['profile_pic_url'] ??
+                        "assets/default_avatar.jpg",
+                    userFollowers['items'][2]['profile_pic_url'] ??
+                        "assets/default_avatar.jpg",
                   ],
+                  followersNames: [
+                    userFollowers['items'][0]['full_name'] ?? "unknown",
+                    userFollowers['items'][1]['full_name'] ?? "unknown",
+                    userFollowers['items'][2]['full_name'] ?? "unknown",
+                    userFollowers['items'][3]['full_name'] ?? "unknown",
+                    userFollowers['items'][4]['full_name'] ?? "unknown",
+                    userFollowers['items'][5]['full_name'] ?? "unknown",
+                    userFollowers['items'][6]['full_name'] ?? "unknown",
+                  ],
+                  isPrivate: isPrivate,
                 ),
                 const SizedBox(height: 5),
                 ButtonCard(),
@@ -91,13 +132,38 @@ class _UserPageState extends State<UserPage>
                     mainAxisSpacing: 1,
                     childAspectRatio: 1.3 / 2,
                   ),
-                  itemCount: img.length,
+                  itemCount: userPosts['items'].length,
                   itemBuilder: (context, index) {
-                    return Image.asset(img[index]);
+                    return Image.network(
+                      userPosts['items'][index]['thumbnail_url'],
+                      fit: BoxFit.cover,
+                    );
                   },
                 ),
-                Icon(Icons.add_circle),
-                Icon(Icons.add_circle),
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 1,
+                    childAspectRatio: 1.3 / 2,
+                  ),
+                  itemCount: img.length,
+                  itemBuilder: (context, index) {
+                    return Image.network(img[index]);
+                  },
+                ),
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 1,
+                    childAspectRatio: 1.3 / 2,
+                  ),
+                  itemCount: img.length,
+                  itemBuilder: (context, index) {
+                    return Image.network(img[index]);
+                  },
+                ),
               ],
             ),
           ),

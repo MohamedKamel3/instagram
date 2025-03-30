@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:instagram/Tools/format_number.dart';
 
 class UserInfo extends StatelessWidget {
-  const UserInfo({super.key});
-
+  const UserInfo({
+    super.key,
+    required this.userInfo,
+    required this.posts,
+    required this.isPrivate,
+  });
+  final Map userInfo;
+  final int posts;
+  final bool isPrivate;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -21,7 +29,7 @@ class UserInfo extends StatelessWidget {
             child: CircleAvatar(
               radius: 45,
               backgroundImage: NetworkImage(
-                "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
+                userInfo['hd_profile_pic_url_info']['url'],
               ),
             ),
           ),
@@ -30,7 +38,7 @@ class UserInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "2",
+                isPrivate ? "?" : formatNumber(posts),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -49,7 +57,7 @@ class UserInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "1.2M",
+                formatNumber(userInfo['follower_count']),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -68,7 +76,7 @@ class UserInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "1.5K",
+                userInfo['following_count'].toString(),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

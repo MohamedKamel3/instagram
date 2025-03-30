@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/Pages/error_page.dart';
 import 'package:instagram/Pages/user.dart';
@@ -17,6 +18,9 @@ class _HomePageState extends State<HomePage> {
   TextEditingController controller = TextEditingController();
   bool isLoading = false;
   Map userInfo = {};
+  Map userPosts = {};
+  Map userReels = {};
+  Map userFollowers = {};
   var api = InstaApi();
   @override
   Widget build(BuildContext context) {
@@ -71,18 +75,31 @@ class _HomePageState extends State<HomePage> {
                 var username = controller.text;
                 var result = await api.getUserInfo(username, userInfo);
                 var response = result;
-                if (response == "200") {
-                  print(userInfo['username']);
+                var result2 = await api.getUserPosts(username, userPosts);
+                var response2 = result2;
+                var result3 = await api.getUserReels(username, userReels);
+                var response3 = result3;
+                var result4 = await api.getUserFollowers(
+                  username,
+                  userFollowers,
+                );
+                var response4 = result4;
+                if (response == "200" || response2 == "200") {
                   Navigator.pushNamed(
                     context,
                     UserPage.id,
-                    arguments: userInfo,
+                    arguments: {
+                      'userInfo': userInfo,
+                      'userPosts': userPosts,
+                      'userReels': userReels,
+                      'userFollowers': userFollowers,
+                    },
                   );
                 } else {
                   Navigator.pushNamed(
                     context,
                     ErrorPage.id,
-                    arguments: {'errorMessage': response},
+                    arguments: {'errorMessage': "$response $response2"},
                   );
                 }
                 setState(() {
@@ -91,7 +108,7 @@ class _HomePageState extends State<HomePage> {
               },
               child:
                   isLoading
-                      ? const CircularProgressIndicator()
+                      ? const CupertinoActivityIndicator(color: Colors.black)
                       : const Text("Search"),
             ),
           ],
