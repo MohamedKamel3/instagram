@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
       routes: {
         UserPage.id: (context) => UserPage(),
-        VideoPage.id: (context) => VideoPage(),
         HomePage.id: (context) => HomePage(),
         ErrorPage.id: (context) => ErrorPage(),
       },

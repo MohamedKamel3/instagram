@@ -5,14 +5,13 @@ import 'package:instagram/Tools/format_followers.dart';
 class CategoryInfo extends StatelessWidget {
   const CategoryInfo({
     super.key,
-    required this.posts,
     required this.p,
     required this.fullName,
     required this.img,
     required this.followersNames,
     required this.isPrivate,
   });
-  final Map posts;
+
   final String p;
   final String fullName;
   final List img;

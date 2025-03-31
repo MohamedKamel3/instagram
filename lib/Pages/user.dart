@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/Pages/video.dart';
 import 'package:instagram/Tools/custom_text.dart';
+import 'package:instagram/Tools/format_number.dart';
 import 'package:instagram/UI_Parts_Helper/button_card.dart';
 import 'package:instagram/UI_Parts_Helper/category_info.dart';
 import 'package:instagram/UI_Parts_Helper/user_info.dart';
@@ -16,7 +18,11 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  Map info = {};
+  Map? userPosts = {};
+  Map? userReels = {};
+  Map? userFollowers = {};
+  bool isPrivate = false;
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
@@ -27,20 +33,20 @@ class _UserPageState extends State<UserPage>
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Map?;
 
-    Map info = {};
-    Map userPosts = {'items': []};
-    Map userReels = {'items': []};
-    Map userFollowers = {'items': []};
-    bool isPrivate = false;
-
     if (args != null) {
-      info = args['userInfo']['data'] ?? {};
+      info = args['userInfo']['data'];
       if (args['userPosts']['data'] != null) {
         userPosts = args['userPosts']['data'];
-        userReels = args['userReels']['data'];
         userFollowers = args['userFollowers']['data'];
       } else {
+        userPosts = null;
+        userFollowers = null;
         isPrivate = true;
+      }
+      if (args['userReels'].length > 1) {
+        userReels = args['userReels']['data'];
+      } else {
+        userReels = null;
       }
     }
 
@@ -64,34 +70,33 @@ class _UserPageState extends State<UserPage>
               children: [
                 UserInfo(
                   userInfo: info,
-                  posts: userPosts['items'].length,
+                  posts: userPosts == null ? 0 : userPosts?['items'].length,
                   isPrivate: isPrivate,
                 ),
                 CategoryInfo(
-                  posts: userPosts,
                   p: info['biography'] ?? "",
                   fullName: info['full_name'] ?? "User",
                   img:
                       isPrivate
                           ? []
                           : [
-                            userFollowers['items'][0]['profile_pic_url'] ??
+                            userFollowers?['items'][0]['profile_pic_url'] ??
                                 "assets/default_avatar.jpg",
-                            userFollowers['items'][1]['profile_pic_url'] ??
+                            userFollowers?['items'][1]['profile_pic_url'] ??
                                 "assets/default_avatar.jpg",
-                            userFollowers['items'][2]['profile_pic_url'] ??
+                            userFollowers?['items'][2]['profile_pic_url'] ??
                                 "assets/default_avatar.jpg",
                           ],
                   followersNames:
                       isPrivate
                           ? []
                           : [
-                            userFollowers['items'][0]['username'] ?? "Unknown",
-                            userFollowers['items'][1]['username'] ?? "Unknown",
-                            userFollowers['items'][2]['username'] ?? "Unknown",
-                            userFollowers['items'][3]['username'] ?? "Unknown",
-                            userFollowers['items'][4]['username'] ?? "Unknown",
-                            userFollowers['items'][5]['username'] ?? "Unknown",
+                            userFollowers?['items'][0]['username'] ?? "Unknown",
+                            userFollowers?['items'][1]['username'] ?? "Unknown",
+                            userFollowers?['items'][2]['username'] ?? "Unknown",
+                            userFollowers?['items'][3]['username'] ?? "Unknown",
+                            userFollowers?['items'][4]['username'] ?? "Unknown",
+                            userFollowers?['items'][5]['username'] ?? "Unknown",
                           ],
                   isPrivate: isPrivate,
                 ),
@@ -124,6 +129,8 @@ class _UserPageState extends State<UserPage>
               children: [
                 isPrivate
                     ? const Center(child: Text("This account is private"))
+                    : userPosts == null
+                    ? const Center(child: Text("This account has no reels"))
                     : GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -132,16 +139,69 @@ class _UserPageState extends State<UserPage>
                             mainAxisSpacing: 1,
                             childAspectRatio: 1.3 / 2,
                           ),
-                      itemCount: userPosts['items'].length,
+                      itemCount: userPosts?['items'].length,
                       itemBuilder: (context, index) {
                         return Image.network(
-                          userPosts['items'][index]['thumbnail_url'],
+                          userPosts?['items'][index]['thumbnail_url'],
                           fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+
+                isPrivate
+                    ? const Center(child: Text("This account is private"))
+                    : userReels == null
+                    ? const Center(child: Text("This account has no reels"))
+                    : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                            childAspectRatio: 1.3 / 2,
+                          ),
+                      itemCount: userReels?['items'].length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => VideoPage(
+                                      videoUrl:
+                                          userReels?['items'][index]['video_url'],
+                                      caption:
+                                          userReels?['items'][index]['caption']['text'],
+                                      username:
+                                          userReels?['items'][index]['user']['username'],
+                                      profileImageUrl:
+                                          userReels?['items'][index]['user']['profile_pic_url'],
+                                      likeCount: formatNumber(
+                                        userReels!['items'][index]['like_count'],
+                                      ),
+                                      commentCount:
+                                          formatNumber(
+                                            userReels!['items'][index]['comment_count'],
+                                          ).toString(),
+                                      shareCount: formatNumber(
+                                        userReels!['items'][index]['has_shared_to_fb'],
+                                      ),
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Image.network(
+                            userReels?['items'][index]['thumbnail_url'],
+                            fit: BoxFit.cover,
+                          ),
                         );
                       },
                     ),
                 isPrivate
                     ? const Center(child: Text("This account is private"))
+                    : userFollowers == null
+                    ? const Center(child: Text("This account has no followers"))
                     : GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -150,28 +210,10 @@ class _UserPageState extends State<UserPage>
                             mainAxisSpacing: 1,
                             childAspectRatio: 1.3 / 2,
                           ),
-                      itemCount: userReels['items'].length,
+                      itemCount: userFollowers?['items'].length,
                       itemBuilder: (context, index) {
                         return Image.network(
-                          userReels['items'][index]['thumbnail_url'],
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                isPrivate
-                    ? const Center(child: Text("This account is private"))
-                    : GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
-                            childAspectRatio: 1.3 / 2,
-                          ),
-                      itemCount: userFollowers['items'].length,
-                      itemBuilder: (context, index) {
-                        return Image.network(
-                          userFollowers['items'][index]['profile_pic_url'],
+                          userFollowers?['items'][index]['profile_pic_url'],
                           fit: BoxFit.cover,
                         );
                       },

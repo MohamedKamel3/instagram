@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 20),
-            CustomText(text: "Enter your username"),
+            CustomText(text: "Enter  username", fontSize: 20),
             const SizedBox(height: 10),
             TextField(
               controller: controller,
@@ -83,13 +83,9 @@ class _HomePageState extends State<HomePage> {
                 var response = result;
                 var result2 = await api.getUserPosts(username, userPosts);
                 var response2 = result2;
-                var result3 = await api.getUserReels(username, userReels);
-                var response3 = result3;
-                var result4 = await api.getUserFollowers(
-                  username,
-                  userFollowers,
-                );
-                var response4 = result4;
+                await api.getUserReels(username, userReels);
+                await api.getUserFollowers(username, userFollowers);
+
                 if (response == "200" || response2 == "200") {
                   Navigator.pushNamed(
                     context,
@@ -115,7 +111,11 @@ class _HomePageState extends State<HomePage> {
               child:
                   isLoading
                       ? const CupertinoActivityIndicator(color: Colors.black)
-                      : const Text("Search"),
+                      : const CustomText(
+                        text: "Search",
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
             ),
           ],
         ),
