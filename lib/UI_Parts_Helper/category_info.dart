@@ -24,9 +24,9 @@ class CategoryInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 15),
+        SizedBox(height: 15, width: double.infinity),
         CustomText(text: fullName, fontSize: 20),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         CustomText(text: p),
         const SizedBox(height: 10),
         if (isPrivate)
@@ -65,6 +65,7 @@ class CategoryInfo extends StatelessWidget {
                     text: formatFollowers(followersNames),
                     fontSize: 16,
                     color: Colors.white,
+                    maxLines: 2,
                   ),
                 ),
               ),

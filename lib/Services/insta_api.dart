@@ -15,7 +15,8 @@ class InstaApi {
       },
     );
 
-    var jsonResponse = jsonDecode(response.body) as Map;
+    var decodedBody = utf8.decode(response.bodyBytes);
+    var jsonResponse = jsonDecode(decodedBody) as Map;
 
     if (response.statusCode == 200) {
       if (jsonResponse.containsKey('data')) {
@@ -38,7 +39,8 @@ class InstaApi {
       },
     );
 
-    var jsonResponse = jsonDecode(response.body) as Map;
+    var decodedBody = utf8.decode(response.bodyBytes);
+    var jsonResponse = jsonDecode(decodedBody) as Map;
 
     if (response.statusCode == 200) {
       if (jsonResponse.containsKey('data')) {
@@ -61,7 +63,8 @@ class InstaApi {
       },
     );
 
-    var jsonResponse = jsonDecode(response.body) as Map;
+    var decodedBody = utf8.decode(response.bodyBytes);
+    var jsonResponse = jsonDecode(decodedBody) as Map;
 
     if (response.statusCode == 200) {
       if (jsonResponse.containsKey('data')) {
@@ -86,7 +89,8 @@ class InstaApi {
       },
     );
 
-    var jsonResponse = jsonDecode(response.body) as Map;
+    var decodedBody = utf8.decode(response.bodyBytes);
+    var jsonResponse = jsonDecode(decodedBody) as Map;
 
     if (response.statusCode == 200) {
       if (jsonResponse.containsKey('data')) {

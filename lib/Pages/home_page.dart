@@ -72,6 +72,12 @@ class _HomePageState extends State<HomePage> {
                   });
                   return;
                 }
+
+                userInfo.clear();
+                userPosts.clear();
+                userReels.clear();
+                userFollowers.clear();
+
                 var username = controller.text;
                 var result = await api.getUserInfo(username, userInfo);
                 var response = result;

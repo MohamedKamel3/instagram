@@ -16,11 +16,6 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List img = [
-    "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
-    "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
-    "assets/WhatsApp Image 2025-02-03 at 18.32.53_6c168231.jpg",
-  ];
 
   @override
   void initState() {
@@ -33,28 +28,25 @@ class _UserPageState extends State<UserPage>
     final args = ModalRoute.of(context)!.settings.arguments as Map?;
 
     Map info = {};
-    Map userPosts = {};
-    Map userReels = {};
-    Map userFollowers = {};
+    Map userPosts = {'items': []};
+    Map userReels = {'items': []};
+    Map userFollowers = {'items': []};
     bool isPrivate = false;
 
     if (args != null) {
-      info = args['userInfo']['data'];
+      info = args['userInfo']['data'] ?? {};
       if (args['userPosts']['data'] != null) {
         userPosts = args['userPosts']['data'];
-        userFollowers = args['userFollowers']['data'];
         userReels = args['userReels']['data'];
+        userFollowers = args['userFollowers']['data'];
       } else {
         isPrivate = true;
-        userPosts = {'data': []};
-        userFollowers = {'data': []};
-        userReels = {'data': []};
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: CustomText(text: info['username'] ?? "unknown User"),
+        title: CustomText(text: info['username'] ?? "Unknown User"),
         leadingWidth: 30,
         actions: [
           IconButton(
@@ -72,30 +64,35 @@ class _UserPageState extends State<UserPage>
               children: [
                 UserInfo(
                   userInfo: info,
-                  posts: userPosts['count'],
+                  posts: userPosts['items'].length,
                   isPrivate: isPrivate,
                 ),
                 CategoryInfo(
                   posts: userPosts,
-                  p: info['biography'],
-                  fullName: info['full_name'],
-                  img: [
-                    userFollowers['items'][0]['profile_pic_url'] ??
-                        "assets/default_avatar.jpg",
-                    userFollowers['items'][1]['profile_pic_url'] ??
-                        "assets/default_avatar.jpg",
-                    userFollowers['items'][2]['profile_pic_url'] ??
-                        "assets/default_avatar.jpg",
-                  ],
-                  followersNames: [
-                    userFollowers['items'][0]['full_name'] ?? "unknown",
-                    userFollowers['items'][1]['full_name'] ?? "unknown",
-                    userFollowers['items'][2]['full_name'] ?? "unknown",
-                    userFollowers['items'][3]['full_name'] ?? "unknown",
-                    userFollowers['items'][4]['full_name'] ?? "unknown",
-                    userFollowers['items'][5]['full_name'] ?? "unknown",
-                    userFollowers['items'][6]['full_name'] ?? "unknown",
-                  ],
+                  p: info['biography'] ?? "",
+                  fullName: info['full_name'] ?? "User",
+                  img:
+                      isPrivate
+                          ? []
+                          : [
+                            userFollowers['items'][0]['profile_pic_url'] ??
+                                "assets/default_avatar.jpg",
+                            userFollowers['items'][1]['profile_pic_url'] ??
+                                "assets/default_avatar.jpg",
+                            userFollowers['items'][2]['profile_pic_url'] ??
+                                "assets/default_avatar.jpg",
+                          ],
+                  followersNames:
+                      isPrivate
+                          ? []
+                          : [
+                            userFollowers['items'][0]['username'] ?? "Unknown",
+                            userFollowers['items'][1]['username'] ?? "Unknown",
+                            userFollowers['items'][2]['username'] ?? "Unknown",
+                            userFollowers['items'][3]['username'] ?? "Unknown",
+                            userFollowers['items'][4]['username'] ?? "Unknown",
+                            userFollowers['items'][5]['username'] ?? "Unknown",
+                          ],
                   isPrivate: isPrivate,
                 ),
                 const SizedBox(height: 5),
@@ -115,7 +112,7 @@ class _UserPageState extends State<UserPage>
             indicatorWeight: 1,
             indicatorSize: TabBarIndicatorSize.tab,
             dragStartBehavior: DragStartBehavior.down,
-            tabs: [
+            tabs: const [
               Icon(Icons.grid_on),
               Icon(Icons.video_library_outlined),
               Icon(Icons.person_add_alt),
@@ -125,45 +122,60 @@ class _UserPageState extends State<UserPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
-                    childAspectRatio: 1.3 / 2,
-                  ),
-                  itemCount: userPosts['items'].length,
-                  itemBuilder: (context, index) {
-                    return Image.network(
-                      userPosts['items'][index]['thumbnail_url'],
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-                GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
-                    childAspectRatio: 1.3 / 2,
-                  ),
-                  itemCount: img.length,
-                  itemBuilder: (context, index) {
-                    return Image.network(img[index]);
-                  },
-                ),
-                GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
-                    childAspectRatio: 1.3 / 2,
-                  ),
-                  itemCount: img.length,
-                  itemBuilder: (context, index) {
-                    return Image.network(img[index]);
-                  },
-                ),
+                isPrivate
+                    ? const Center(child: Text("This account is private"))
+                    : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                            childAspectRatio: 1.3 / 2,
+                          ),
+                      itemCount: userPosts['items'].length,
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          userPosts['items'][index]['thumbnail_url'],
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                isPrivate
+                    ? const Center(child: Text("This account is private"))
+                    : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                            childAspectRatio: 1.3 / 2,
+                          ),
+                      itemCount: userReels['items'].length,
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          userReels['items'][index]['thumbnail_url'],
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                isPrivate
+                    ? const Center(child: Text("This account is private"))
+                    : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                            childAspectRatio: 1.3 / 2,
+                          ),
+                      itemCount: userFollowers['items'].length,
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          userFollowers['items'][index]['profile_pic_url'],
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
               ],
             ),
           ),
