@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram/utils/format_number.dart';
 import 'package:video_player/video_player.dart';
 import 'package:instagram/widgets/custom_text.dart';
 
@@ -50,12 +51,14 @@ class _VideoPageState extends State<VideoPage> {
   bool _isLoading = true;
   bool _showControls = false;
   bool _isLiked = false;
-  int _likeCount = 0;
+  String _likeCount = "";
+  int _likeCountt = 0;
 
   @override
   void initState() {
     super.initState();
-    _likeCount = int.tryParse(widget.likeCount) ?? 0;
+    _likeCountt = int.tryParse(widget.likeCount) ?? 0;
+    _likeCount = formatNumber(_likeCountt);
     _initializeVideo();
   }
 
@@ -105,7 +108,7 @@ class _VideoPageState extends State<VideoPage> {
   void _toggleLike() {
     setState(() {
       _isLiked = !_isLiked;
-      _likeCount += _isLiked ? 1 : -1;
+      _likeCountt += _isLiked ? 1 : -1;
     });
   }
 
@@ -131,29 +134,17 @@ class _VideoPageState extends State<VideoPage> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Video Background
-          Container(color: Colors.black),
-
           // Video Player
           if (_isLoading)
             const Center(child: CircularProgressIndicator())
           else
             GestureDetector(
               onTap: _togglePlayPause,
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                ),
-              ),
+              child: Center(child: Expanded(child: VideoPlayer(_controller))),
             ),
 
           // Video Controls
@@ -191,7 +182,7 @@ class _VideoPageState extends State<VideoPage> {
       children: [
         _buildActionButton(
           icon: _isLiked ? Icons.favorite : Icons.favorite_border,
-          count: _likeCount.toString(),
+          count: _likeCount,
           color: _isLiked ? Colors.red : Colors.white,
           onTap: _toggleLike,
         ),
@@ -232,7 +223,7 @@ class _VideoPageState extends State<VideoPage> {
 
   Widget _buildUserInfo() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
           radius: 20,

@@ -32,7 +32,10 @@ class ReelModel {
     return ReelModel(
       videoUrl: json['video_url']?.toString(),
       thumbnailUrl: json['thumbnail_url']?.toString(),
-      caption: json['caption']?.toString() ?? json['title']?.toString() ?? '',
+      caption:
+          json['caption']?['text'].toString() ??
+          json['title']?.toString() ??
+          '',
       username: json['user']?['username']?.toString(),
       profileImageUrl: json['user']?['profile_pic_url']?.toString(),
       likeCount: json['like_count'] as int?,

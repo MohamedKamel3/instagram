@@ -254,13 +254,13 @@ class _UserPageState extends State<UserPage>
       context,
       VideoPage.routeName,
       arguments: {
-        'videoUrl': reel.videoUrl ?? '',
-        'caption': reel.caption ?? '',
-        'username': reel.username ?? 'Unknown',
-        'profileImageUrl': reel.profileImageUrl ?? 'assets/default_profile.png',
-        'likeCount': (reel.likeCount ?? 0).toString(),
-        'commentCount': (reel.commentCount ?? 0).toString(),
-        'shareCount': '0', // Default value
+        'videoUrl': reel.videoUrl,
+        'caption': reel.caption,
+        'username': reel.username,
+        'profileImageUrl': reel.profileImageUrl,
+        'likeCount': (reel.likeCount).toString(),
+        'commentCount': (reel.commentCount).toString(),
+        'shareCount': '0',
       },
     );
   }

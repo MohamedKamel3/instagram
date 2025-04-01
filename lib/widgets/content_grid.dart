@@ -23,14 +23,48 @@ class ContentGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Handle empty state when not loading
+    if (!isLoading && items.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isPrivate ? Icons.lock_outline : Icons.photo_library_outlined,
+              size: 50,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              isPrivate ? 'This account is private' : 'No posts yet',
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade400),
+            ),
+          ],
+        ),
+      );
+    }
+
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 1,
         crossAxisSpacing: 1,
       ),
-      itemCount: isLoading ? 0 : items.length,
+      itemCount: isLoading ? 9 : items.length,
       itemBuilder: (context, index) {
+        // Show loading placeholders
+        if (isLoading) {
+          return Container(color: Colors.grey.shade200).redacted(
+            context: context,
+            redact: true,
+            configuration: RedactedConfiguration(
+              defaultBorderRadius: BorderRadius.circular(1),
+              animationDuration: const Duration(milliseconds: 800),
+            ),
+          );
+        }
+
+        // Handle actual content
         final item = items[index];
         String? imageUrl;
 
@@ -46,24 +80,28 @@ class ContentGrid extends StatelessWidget {
 
         return GestureDetector(
           onTap: () => onItemTap?.call(index),
-          child: Image.network(
-            imageUrl ?? DefaultValues.defaultProfileImage,
-            fit: BoxFit.cover,
-            errorBuilder:
-                (_, __, ___) => Container(
-                  color: Colors.grey[800],
-                  child: const Icon(Icons.error, color: Colors.white),
-                ),
-          ).redacted(
-            context: context,
-            redact: isLoading,
-            configuration: RedactedConfiguration(
-              defaultBorderRadius: BorderRadius.circular(1),
-              animationDuration: const Duration(milliseconds: 800),
-            ),
-          ),
+          child:
+              imageUrl != null
+                  ? Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(color: Colors.grey.shade200);
+                    },
+                    errorBuilder:
+                        (_, error, stackTrace) => _buildErrorPlaceholder(),
+                  )
+                  : _buildErrorPlaceholder(),
         );
       },
-    ).redacted(context: context, redact: isLoading);
+    );
+  }
+
+  Widget _buildErrorPlaceholder() {
+    return Container(
+      color: Colors.grey.shade800,
+      child: const Icon(Icons.error_outline, color: Colors.white),
+    );
   }
 }
