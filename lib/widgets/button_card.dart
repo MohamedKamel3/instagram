@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instagram/Tools/custom_text.dart';
+import 'package:instagram/widgets/custom_text.dart';
 
 class ButtonCard extends StatelessWidget {
   const ButtonCard({super.key});

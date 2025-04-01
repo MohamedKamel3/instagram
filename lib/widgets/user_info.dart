@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:instagram/Tools/format_number.dart';
+import 'package:instagram/models/user_model.dart';
+import 'package:instagram/utils/format_number.dart';
+import 'package:redacted/redacted.dart';
 
 class UserInfo extends StatelessWidget {
   const UserInfo({
@@ -7,10 +9,12 @@ class UserInfo extends StatelessWidget {
     required this.userInfo,
     required this.posts,
     required this.isPrivate,
+    required this.isLoading,
   });
-  final Map userInfo;
+  final UserModel userInfo;
   final int posts;
   final bool isPrivate;
+  final bool isLoading;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -28,8 +32,15 @@ class UserInfo extends StatelessWidget {
             ),
             child: CircleAvatar(
               radius: 45,
-              backgroundImage: NetworkImage(
-                userInfo['hd_profile_pic_url_info']['url'],
+              backgroundImage:
+                  isLoading ? null : NetworkImage(userInfo.profilePicUrl),
+              backgroundColor: isLoading ? Colors.grey : Colors.transparent,
+            ).redacted(
+              context: context,
+              redact: isLoading,
+              configuration: RedactedConfiguration(
+                defaultBorderRadius: BorderRadius.circular(20),
+                animationDuration: const Duration(milliseconds: 800),
               ),
             ),
           ),
@@ -44,6 +55,13 @@ class UserInfo extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
+              ).redacted(
+                context: context,
+                redact: isLoading,
+                configuration: RedactedConfiguration(
+                  defaultBorderRadius: BorderRadius.circular(20),
+                  animationDuration: const Duration(milliseconds: 800),
+                ),
               ),
               SizedBox(height: 1),
               Text(
@@ -57,11 +75,18 @@ class UserInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                formatNumber(userInfo['follower_count']),
+                formatNumber(userInfo.followerCount),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                ),
+              ).redacted(
+                context: context,
+                redact: isLoading,
+                configuration: RedactedConfiguration(
+                  defaultBorderRadius: BorderRadius.circular(20),
+                  animationDuration: const Duration(milliseconds: 800),
                 ),
               ),
               SizedBox(height: 1),
@@ -76,11 +101,18 @@ class UserInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                userInfo['following_count'].toString(),
+                formatNumber(userInfo.followingCount),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                ),
+              ).redacted(
+                context: context,
+                redact: isLoading,
+                configuration: RedactedConfiguration(
+                  defaultBorderRadius: BorderRadius.circular(20),
+                  animationDuration: const Duration(milliseconds: 800),
                 ),
               ),
               SizedBox(height: 1),

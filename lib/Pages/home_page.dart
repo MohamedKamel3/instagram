@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram/Pages/error_page.dart';
-import 'package:instagram/Pages/user.dart';
 import 'package:instagram/Services/insta_api.dart';
-import 'package:instagram/Tools/custom_text.dart';
-import 'package:instagram/Tools/text_field_decoration.dart';
+import 'package:instagram/utils/text_field_decoration.dart';
+import 'package:instagram/widgets/custom_text.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-  static const String id = 'HomePage';
+  static const String routeName = '/';
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -17,13 +15,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController controller = TextEditingController();
   bool isLoading = false;
-  Map userInfo = {};
-  Map userPosts = {};
-  Map userReels = {};
-  Map userFollowers = {};
-  var api = InstaApi();
+
   @override
   Widget build(BuildContext context) {
+    controller.text = "";
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -62,50 +57,21 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Colors.pink,
                 minimumSize: const Size.fromHeight(50),
               ),
-              onPressed: () async {
+              onPressed: () {
+                if (controller.text.isEmpty) {
+                  return;
+                }
                 setState(() {
                   isLoading = true;
                 });
-                if (controller.text.isEmpty) {
+                Navigator.pushNamed(
+                  context,
+                  '/user',
+                  arguments: {'username': controller.text},
+                ).then((value) {
                   setState(() {
                     isLoading = false;
                   });
-                  return;
-                }
-
-                userInfo.clear();
-                userPosts.clear();
-                userReels.clear();
-                userFollowers.clear();
-
-                var username = controller.text;
-                var result = await api.getUserInfo(username, userInfo);
-                var response = result;
-                var result2 = await api.getUserPosts(username, userPosts);
-                var response2 = result2;
-                await api.getUserReels(username, userReels);
-                await api.getUserFollowers(username, userFollowers);
-
-                if (response == "200" || response2 == "200") {
-                  Navigator.pushNamed(
-                    context,
-                    UserPage.id,
-                    arguments: {
-                      'userInfo': userInfo,
-                      'userPosts': userPosts,
-                      'userReels': userReels,
-                      'userFollowers': userFollowers,
-                    },
-                  );
-                } else {
-                  Navigator.pushNamed(
-                    context,
-                    ErrorPage.id,
-                    arguments: {'errorMessage': "$response $response2"},
-                  );
-                }
-                setState(() {
-                  isLoading = false;
                 });
               },
               child:

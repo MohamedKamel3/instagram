@@ -1,42 +1,35 @@
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
-  const ErrorPage({super.key});
-  static const String id = 'ErrorPage';
+  static const String routeName = '/error';
+
+  const ErrorPage({super.key, this.errorMessage});
+  final String? errorMessage;
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-    String errorMessage = args?['errorMessage'] ?? 'An error occurred';
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Error",
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.pinkAccent,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Text(
-                "Error : $errorMessage",
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+      body: ListView(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height / 3),
+          Center(
+            child: Column(
+              children: [
+                Icon(Icons.error_outline, size: 50, color: Colors.red),
+                SizedBox(height: 16),
+                Text(
+                  errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
                 ),
-              ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Back to Home'),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
