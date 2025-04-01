@@ -59,7 +59,7 @@
   - Replace the contents of the lib/ folder with the provided code
   - add all packages
   - Run flutter pub get to install dependencies
-  - add your API Key in (Service/insta_api.dart)
+  - add your API Key in (Services/insta_api.dart)
   - Run the app with flutter run
 
 
