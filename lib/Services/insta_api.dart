@@ -2,10 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class InstaApi {
-  // API Keys : 1-(895f6b4d68mshe18c9a9c813f29fp1a8e91jsnd11b4ad85baf)  2-(9242841d31msh180f24748a34103p1516aajsne8f74246495c)
-
-  static const String _apiKey =
-      '895f6b4d68mshe18c9a9c813f29fp1a8e91jsnd11b4ad85baf';
+  static const String _apiKey = 'Your API Key';
   static const String _baseUrl = 'https://social-api4.p.rapidapi.com';
   static const Map<String, String> _headers = {
     'X-RapidAPI-Key': _apiKey,
