@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram/Services/insta_api.dart';
 import 'package:instagram/utils/text_field_decoration.dart';
 import 'package:instagram/widgets/custom_text.dart';
 import 'package:ionicons/ionicons.dart';

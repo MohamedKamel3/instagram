@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:instagram/Models/follower_model.dart';
 import 'package:instagram/Models/reel_model.dart';
@@ -25,7 +23,6 @@ class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final InstaApi _api = InstaApi();
-  Map? _args;
 
   // Initialize with empty/default values
   List<PostModel> _posts = [];
