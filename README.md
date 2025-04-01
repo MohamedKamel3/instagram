@@ -44,7 +44,6 @@
 
 * Other Package:
   - cupertino_icons - Provides iOS-style icons
-  - flutter_svg - For rendering SVG images (used for logos/icons)
   - http - For API calls to fetch profile data and posts
   - ionicons - Additional icon set for more UI options
   - redacted - For placeholder loading effects
