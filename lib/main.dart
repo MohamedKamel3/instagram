@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:instagram/Pages/error_page.dart';
 import 'package:instagram/Pages/home_page.dart';
 import 'package:instagram/Pages/user.dart';
-import 'package:instagram/Pages/video.dart';
 
 void main() {
   runApp(const MyApp());
