@@ -15,11 +15,11 @@
 ## Key Features
 
 * Profile Header Section:
-  -Profile picture with circular avatar
-  -Post, follower, and following counts
-  -Bio description section
-  -Followed-by information
-  -Action buttons (Following, Message, Add)
+  - Profile picture with circular avatar
+  - Post, follower, and following counts
+  - Bio description section
+  - Followed-by information
+  - Action buttons (Following, Message, Add)
 
 *Story Highlights:
   -Horizontal scrollable list of story circles
