@@ -14,7 +14,7 @@
 
 ## Key Features
 
-*Profile Header Section:
+* Profile Header Section:
   -Profile picture with circular avatar
   -Post, follower, and following counts
   -Bio description section
