@@ -6,27 +6,29 @@ plugins {
 
 android {
     namespace = "com.example.instagram"
-    compileSdk = 35
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_21.toString()
     }
 
     defaultConfig {
         applicationId = "com.example.instagram"
-        minSdk = 21
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     buildTypes {
         release {
+
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -34,8 +36,4 @@ android {
 
 flutter {
     source = "../.."
-}
-
-dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
 }

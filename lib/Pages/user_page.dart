@@ -51,7 +51,7 @@ class _UserPageState extends State<UserPage>
       if (!_isDisposed) {
         final args = ModalRoute.of(context)?.settings.arguments as Map?;
         if (args != null && args['username'] != null) {
-          _fetchUserData(args['username'] as String);
+          fetchUserData(args['username'] as String);
         }
       }
     });
@@ -64,7 +64,7 @@ class _UserPageState extends State<UserPage>
     super.dispose();
   }
 
-  Future<void> _fetchUserData(String username) async {
+  Future<void> fetchUserData(String username) async {
     try {
       if (!mounted) return;
       setState(() {
